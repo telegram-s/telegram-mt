@@ -99,7 +99,7 @@ public class MTProto {
         this.TAG = "MTProto#" + INSTANCE_INDEX;
         this.mode = mode;
         this.actorSystem = new ActorSystem();
-        this.actorSystem.addDispatcher("connector");
+        this.actorSystem.addDispatcher("connection");
         this.responseActor = actorSystem.actorOf(processor());
         this.actionsActor = actorSystem.actorOf(internal());
 
