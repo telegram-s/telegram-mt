@@ -17,6 +17,7 @@ import org.telegram.tl.TLObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.telegram.mtproto.secure.CryptoUtils.*;
@@ -83,6 +84,7 @@ public class MTProto {
 
     private int mode = MODE_GENERAL;
     private final Scheduller scheduller;
+    private final ConcurrentHashMap<Long, PingCallback> pingCallbacks = new ConcurrentHashMap<Long, PingCallback>();
     private final ArrayList<Long> receivedMessages = new ArrayList<Long>();
     private final ActorRef responseActor;
     private final ActorRef actionsActor;
@@ -214,6 +216,12 @@ public class MTProto {
 
             this.actionsActor.sendOnce(new RequestPingDelay());
         }
+    }
+
+    public void ping(long id, long timeout, PingCallback callback) {
+        pingCallbacks.put(id, callback);
+        scheduller.postMessage(new MTPing(id), false, timeout);
+        actionsActor.send(new PingTimeout(id), timeout);
     }
 
     public void close() {
@@ -384,6 +392,10 @@ public class MTProto {
                 long delta = System.nanoTime() / 1000000 - time;
                 TimeOverlord.getInstance().onMethodExecuted(pong.getMessageId(), msgId, delta);
             }
+            PingCallback pingCallback = pingCallbacks.remove(pong.getPingId());
+            if (pingCallback != null) {
+                pingCallback.onPingSuccess(pong.getPingId());
+            }
         } else if (object instanceof MTFutureSalts) {
             MTFutureSalts salts = (MTFutureSalts) object;
             scheduller.onMessageConfirmed(salts.getRequestId());
@@ -487,6 +499,18 @@ public class MTProto {
 
     }
 
+    private static class PingTimeout {
+        private final long pingId;
+
+        private PingTimeout(long pingId) {
+            this.pingId = pingId;
+        }
+
+        public long getPingId() {
+            return pingId;
+        }
+    }
+
     private static class InternalActionsActor extends Actor {
 
         private int lastPingMessage = -1;
@@ -502,6 +526,12 @@ public class MTProto {
                 onRequestSaltsMessage();
             } else if (message instanceof RequestPingDelay) {
                 onPingDelayMessage();
+            } else if (message instanceof PingTimeout) {
+                PingTimeout timeout = (PingTimeout) message;
+                PingCallback pingCallback = proto.pingCallbacks.remove(timeout.getPingId());
+                if (pingCallback != null) {
+                    pingCallback.onPingTimeout(timeout.getPingId());
+                }
             }
         }
 
