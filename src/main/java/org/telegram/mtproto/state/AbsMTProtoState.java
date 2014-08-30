@@ -5,10 +5,7 @@ import org.telegram.mtproto.time.TimeOverlord;
 import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 07.11.13
- * Time: 7:15
+ * MTProto state
  */
 public abstract class AbsMTProtoState {
 

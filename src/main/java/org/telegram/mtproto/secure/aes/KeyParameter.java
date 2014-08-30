@@ -1,5 +1,8 @@
-package org.telegram.mtproto.secure;
+package org.telegram.mtproto.secure.aes;
 
+/**
+ * Key infomration for AES
+ */
 public class KeyParameter {
     private byte[] key;
 

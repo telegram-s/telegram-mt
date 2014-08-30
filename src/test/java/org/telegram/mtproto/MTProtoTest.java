@@ -66,7 +66,7 @@ public class MTProtoTest {
             }
 
             @Override
-            public void onConfirmed(int callId) {
+            public void onConfirmed(int callId, MTProto proto) {
 
             }
         }, new CallWrapper() {

@@ -25,10 +25,7 @@ import static org.telegram.mtproto.secure.CryptoUtils.*;
 import static org.telegram.tl.StreamingUtils.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 03.11.13
- * Time: 4:11
+ * Class for performing generating of auth keys
  */
 public class Authorizer {
     private static final String TAG = "Authorizer";
@@ -190,6 +187,12 @@ public class Authorizer {
         throw new ServerException();
     }
 
+    /**
+     * Perform auth
+     *
+     * @param infos connection information
+     * @return auth
+     */
     public PqAuth doAuth(ConnectionInfo[] infos) {
         TransportRate rate = new TransportRate(infos);
         for (int i = 0; i < AUTH_ATTEMPT_COUNT; i++) {

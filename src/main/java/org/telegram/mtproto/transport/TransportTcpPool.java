@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static org.telegram.mtproto.util.TimeUtil.getUnixTime;
-
 /**
  * Created by ex3ndr on 03.04.14.
  */

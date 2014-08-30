@@ -9,10 +9,15 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
- * Created by ex3ndr on 04.02.14.
+ * Object for caching bytes for avoiding GC
  */
 public class BytesCache {
 
+    /**
+     * Global byte cache
+     *
+     * @return byte cache
+     */
     public static BytesCache getInstance() {
         return instance;
     }
@@ -30,6 +35,11 @@ public class BytesCache {
 
     private final String TAG;
 
+    /**
+     * Creating byte cache
+     *
+     * @param logTag tag for logging
+     */
     public BytesCache(String logTag) {
         TAG = logTag;
         for (int i = 0; i < SIZES.length; i++) {
@@ -37,6 +47,11 @@ public class BytesCache {
         }
     }
 
+    /**
+     * Put bytes to cache
+     *
+     * @param data bytes
+     */
     public synchronized void put(byte[] data) {
         references.remove(data);
 
@@ -54,6 +69,12 @@ public class BytesCache {
         }
     }
 
+    /**
+     * Allocating new byte array with minimal size
+     *
+     * @param minSize minimal size
+     * @return bytes
+     */
     public synchronized byte[] allocate(int minSize) {
         if (minSize <= MAX_SIZE) {
             for (int i = 0; i < SIZES.length; i++) {

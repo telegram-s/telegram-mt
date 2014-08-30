@@ -3,10 +3,7 @@ package org.telegram.mtproto;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 03.11.13
- * Time: 6:44
+ * Exception for transport security breaks
  */
 public class TransportSecurityException extends IOException {
     public TransportSecurityException() {

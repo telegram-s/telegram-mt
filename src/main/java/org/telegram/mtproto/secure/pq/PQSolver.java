@@ -3,7 +3,7 @@ package org.telegram.mtproto.secure.pq;
 import java.math.BigInteger;
 
 /**
- * Created by ex3ndr on 12.02.14.
+ * Solver for pq auth
  */
 public class PQSolver {
     private static PQImplementation currentImplementation = new PQLopatin();

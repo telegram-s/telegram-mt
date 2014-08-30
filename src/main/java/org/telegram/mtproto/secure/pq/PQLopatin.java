@@ -3,7 +3,7 @@ package org.telegram.mtproto.secure.pq;
 import java.util.Random;
 
 /**
- * Created by ex3ndr on 12.02.14.
+ * Ported PQ Solver created by Andrew Lopatin
  */
 public class PQLopatin implements PQImplementation {
     @Override

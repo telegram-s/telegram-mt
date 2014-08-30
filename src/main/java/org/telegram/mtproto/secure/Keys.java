@@ -3,10 +3,7 @@ package org.telegram.mtproto.secure;
 import java.math.BigInteger;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 03.11.13
- * Time: 6:04
+ * Built-in public keys for Telegram servers
  */
 public class Keys {
     public static class Key {

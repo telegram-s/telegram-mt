@@ -24,16 +24,26 @@ import static org.telegram.mtproto.secure.CryptoUtils.*;
 import static org.telegram.tl.StreamingUtils.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 03.11.13
- * Time: 8:14
+ * MTProto implementation for Java. Mor information about mtproto see at
+ * <a href="https://core.telegram.org/mtproto">official Telegram portal</a>
  */
 public class MTProto {
 
+    /**
+     * General mode for MTProto
+     */
     public static final int MODE_GENERAL = 0;
+    /**
+     * Mode for background operations
+     */
     public static final int MODE_GENERAL_LOW_MODE = 1;
+    /**
+     * Mode for file operations
+     */
     public static final int MODE_FILE = 2;
+    /**
+     * Mode for push operations
+     */
     public static final int MODE_PUSH = 3;
 
     private static final AtomicInteger instanceIndex = new AtomicInteger(1000);
@@ -92,6 +102,15 @@ public class MTProto {
 
     private boolean isClosed;
 
+    /**
+     * Creating mtproto engine
+     *
+     * @param state            state object of mtproto
+     * @param callback         callback for mtproto messages
+     * @param callWrapper      wrapper for each call
+     * @param connectionsCount desired connections count
+     * @param mode             operation mode
+     */
     public MTProto(AbsMTProtoState state,
                    MTProtoCallback callback,
                    CallWrapper callWrapper,
@@ -126,7 +145,7 @@ public class MTProto {
                 // We might not send this to response actor for providing faster confirmation
                 int[] ids = scheduller.mapFastConfirm(hash);
                 for (int id : ids) {
-                    MTProto.this.callback.onConfirmed(id);
+                    MTProto.this.callback.onConfirmed(id, MTProto.this);
                 }
             }
         }, desiredConnectionCount);
@@ -146,58 +165,122 @@ public class MTProto {
         this.actionsActor.sendOnce(new RequestSalt());
     }
 
+    /**
+     * Current MTProto state
+     *
+     * @return state
+     */
     public AbsMTProtoState getState() {
         return state;
     }
 
+    /**
+     * Resetting network backoff. Useful for faster connection restore.
+     */
     public void resetNetworkBackoff() {
         this.transportPool.resetConnectionBackoff();
         this.actionsActor.sendOnce(new RequestPingDelay());
     }
 
+    /**
+     * Reloading information about mtproto connections
+     */
     public void reloadConnectionInformation() {
         this.transportPool.reloadConnectionInformation();
         this.actionsActor.sendOnce(new RequestPingDelay());
     }
 
+    /**
+     * Unique index of instance
+     *
+     * @return index
+     */
     public int getInstanceIndex() {
         return INSTANCE_INDEX;
     }
 
+    /**
+     * Scheduller of mtproto
+     *
+     * @return scheduller
+     */
     public Scheduller getScheduller() {
         return scheduller;
     }
 
+    /**
+     * Current session of mtproto
+     *
+     * @return session
+     */
     public byte[] getSession() {
         return session;
     }
 
+    /**
+     * Current auth key id
+     *
+     * @return auth key id
+     */
     public byte[] getAuthKeyId() {
         return authKeyId;
     }
 
+    /**
+     * Current auth key
+     *
+     * @return auth key
+     */
     public byte[] getAuthKey() {
         return authKey;
     }
 
+    /**
+     * Actor System of mtproto
+     *
+     * @return actor system
+     */
     public ActorSystem getActorSystem() {
         return actorSystem;
     }
 
+    /**
+     * Is MTProtoengine closed
+     *
+     * @return closed flag
+     */
     public boolean isClosed() {
         return isClosed;
     }
 
+    /**
+     * Sending rpc request
+     *
+     * @param request      request
+     * @param timeout      timeout of request
+     * @param highPriority is hight priority request
+     * @return request id
+     */
     public int sendRpcMessage(TLMethod request, long timeout, boolean highPriority) {
         int id = scheduller.postMessage(request, true, timeout, highPriority);
         Logger.d(TAG, "sendMessage #" + id + " " + request.toString() + " with timeout " + timeout + " ms");
         return id;
     }
 
+    /**
+     * Forget message with request id
+     *
+     * @param id request id
+     */
     public void forgetMessage(int id) {
         scheduller.forgetMessage(id);
     }
 
+    /**
+     * Switch mode of mtproto
+     *
+     * @param mode new mode
+     */
     public void switchMode(int mode) {
         if (this.mode != mode) {
             this.mode = mode;
@@ -218,12 +301,22 @@ public class MTProto {
         }
     }
 
+    /**
+     * Perform Ping
+     *
+     * @param id       ping id
+     * @param timeout  ping timeout
+     * @param callback ping callback
+     */
     public void ping(long id, long timeout, PingCallback callback) {
         pingCallbacks.put(id, callback);
         scheduller.postMessage(new MTPing(id), false, timeout);
         actionsActor.send(new PingTimeout(id), timeout);
     }
 
+    /**
+     * Close mtproto engine
+     */
     public void close() {
         if (!isClosed) {
             this.isClosed = true;
@@ -316,7 +409,7 @@ public class MTProto {
                 log += ackMsgId;
                 int id = scheduller.mapSchedullerId(ackMsgId);
                 if (id > 0) {
-                    callback.onConfirmed(id);
+                    callback.onConfirmed(id, MTProto.this);
                 }
             }
             Logger.d(TAG, "msgs_ack: " + log);

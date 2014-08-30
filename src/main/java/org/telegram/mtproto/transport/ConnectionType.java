@@ -1,7 +1,7 @@
 package org.telegram.mtproto.transport;
 
 /**
- * Created by ex3ndr on 26.11.13.
+ * Type of connection
  */
 public class ConnectionType {
     public static final int TYPE_TCP = 0;
@@ -18,18 +18,38 @@ public class ConnectionType {
         this.connectionType = connectionType;
     }
 
+    /**
+     * Unique ID of connection
+     *
+     * @return id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Host for connection
+     *
+     * @return host
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Port for connection
+     *
+     * @return port
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * Connection type
+     *
+     * @return connection type, see {@code TYPE_TCP}
+     */
     public int getConnectionType() {
         return connectionType;
     }

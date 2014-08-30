@@ -3,10 +3,7 @@ package org.telegram.mtproto;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 03.11.13
- * Time: 6:47
+ * Exception while performing auth key generation
  */
 public class ServerException extends IOException {
     public ServerException() {

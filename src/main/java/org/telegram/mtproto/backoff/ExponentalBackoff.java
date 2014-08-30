@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by ex3ndr on 27.12.13.
+ * Backoff for networking operations
  */
 public class ExponentalBackoff {
 
@@ -20,10 +20,20 @@ public class ExponentalBackoff {
 
     private final String TAG;
 
+    /**
+     * Creating backoff
+     *
+     * @param logTag logging tag
+     */
     public ExponentalBackoff(String logTag) {
         this.TAG = logTag;
     }
 
+    /**
+     * Called on failure, wait required time before exiting method
+     *
+     * @throws InterruptedException if waiting was interrupted
+     */
     public void onFailure() throws InterruptedException {
         int val = currentFailureCount.incrementAndGet();
         if (val > 50) {
@@ -39,6 +49,9 @@ public class ExponentalBackoff {
         }
     }
 
+    /**
+     * onFailure without waiting
+     */
     public void onFailureNoWait() {
         Logger.d(TAG, "onFailureNoWait");
         int val = currentFailureCount.incrementAndGet();
@@ -48,11 +61,17 @@ public class ExponentalBackoff {
         }
     }
 
+    /**
+     * Called on success operation
+     */
     public void onSuccess() {
         Logger.d(TAG, "onSuccess");
         reset();
     }
 
+    /**
+     * Resetting backoff state
+     */
     public void reset() {
         Logger.d(TAG, "reset");
         currentFailureCount.set(0);

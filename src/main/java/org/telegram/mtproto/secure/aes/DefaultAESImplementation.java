@@ -1,13 +1,11 @@
 package org.telegram.mtproto.secure.aes;
 
-import org.telegram.mtproto.secure.KeyParameter;
-
 import java.io.*;
 
 import static org.telegram.mtproto.secure.CryptoUtils.substring;
 
 /**
- * Created by ex3ndr on 12.02.14.
+ * Default plain-java implementation of encryption
  */
 public class DefaultAESImplementation implements AESImplementation {
 

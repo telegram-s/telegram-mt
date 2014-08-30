@@ -3,7 +3,7 @@ package org.telegram.mtproto.secure.aes;
 import java.io.IOException;
 
 /**
- * Created by ex3ndr on 12.02.14.
+ * Interface fom implementation of AES encryption for mtproto
  */
 public abstract interface AESImplementation {
     public void AES256IGEDecrypt(byte[] src, byte[] dest, int len, byte[] iv, byte[] key);

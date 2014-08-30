@@ -1,7 +1,5 @@
 package org.telegram.mtproto.secure.aes;
 
-import org.telegram.mtproto.secure.KeyParameter;
-
 /**
  * <p>an implementation of the AES (Rijndael), from FIPS-197.</p>
  * <p>For further details see: <a href="http://csrc.nist.gov/encryption/aes/">http://csrc.nist.gov/encryption/aes/</a>.</p>

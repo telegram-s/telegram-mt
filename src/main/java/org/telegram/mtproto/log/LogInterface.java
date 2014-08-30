@@ -1,10 +1,7 @@
 package org.telegram.mtproto.log;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 10.11.13
- * Time: 2:11
+ * Interface for custom logger
  */
 public interface LogInterface {
     void w(String tag, String message);

@@ -1,12 +1,7 @@
 package org.telegram.mtproto.time;
 
-import org.telegram.mtproto.log.Logger;
-
 /**
- * Created with IntelliJ IDEA.
- * User: ex3ndr
- * Date: 02.11.13
- * Time: 21:35
+ * Time overlord that automatically sync time with server
  */
 public class TimeOverlord {
     private static TimeOverlord instance;

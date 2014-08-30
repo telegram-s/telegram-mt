@@ -1,7 +1,7 @@
 package org.telegram.mtproto;
 
 /**
- * Created by ex3ndr on 29.08.14.
+ * Ping callback
  */
 public interface PingCallback {
     void onPingSuccess(long id);
