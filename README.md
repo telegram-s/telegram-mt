@@ -17,7 +17,7 @@ Maven
 <dependency>
   <groupId>org.telegram-s</groupId>
   <artifactId>mtproto</artifactId>
-  <version>1.5.0</version>
+  <version>1.5+</version>
   <scope>compile</scope>
 </dependency>
 ```
