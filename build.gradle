@@ -1,16 +1,91 @@
 buildscript {
-	repositories {
+    repositories {
         mavenCentral()
     }
 }
 repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     mavenCentral()
 }
 
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'org.telegram-s'
+version = '1.5.0'
+
+compileJava {
+    sourceCompatibility 1.6
+    targetCompatibility 1.6
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+
+    archives javadocJar
+    archives sourcesJar
+}
+
+if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
+
+    signing {
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Telegram MTProto'
+                    packaging 'jar'
+                    description 'Telegram MTProto implementation for java'
+                    url 'https://github.com/telegram-s/telegram-mt'
+
+                    scm {
+                        url 'scm:git@github.com:telegram-s/telegram-mt.git'
+                        connection 'scm:git@github.com:telegram-s/telegram-mt.git'
+                        developerConnection 'scm:git@github.com:telegram-s/telegram-mt.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The MIT License (MIT)'
+                            url 'http://opensource.org/licenses/MIT'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'ex3ndr'
+                            name 'Stepan Korshakov'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.telegram-s:tl-core:1.1+'
     compile 'com.droidkit:actors:0.2.48+'
     testCompile 'junit:junit:[4,)'
 }
